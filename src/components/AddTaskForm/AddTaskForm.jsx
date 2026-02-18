@@ -1,7 +1,7 @@
 import Field from "../Field/Field.jsx";
 import Button from "../Button/Button.jsx";
 import {useContext, useState} from "react";
-import {TaskContext} from "../../../context/TaskContext.jsx";
+import {TaskContext} from "../../context/TaskContext.jsx";
 
 const AddTaskForm = () => {
   const {

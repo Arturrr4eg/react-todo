@@ -9,6 +9,11 @@ const tasksAPI = {
       .then((response) => response.json())
   },
 
+  getById: (taskId) => {
+    return fetch(`${URL}/${taskId}`)
+      .then((response)=> response.json())
+  },
+
   add: (task) => {
     return fetch(URL, {
       method: 'POST',

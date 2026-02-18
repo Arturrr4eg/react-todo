@@ -6,7 +6,7 @@ import {
   useContext
 } from "react";
 import Button from "../Button/Button.jsx";
-import {TaskContext} from "../../../context/TaskContext.jsx";
+import {TaskContext} from "../../context/TaskContext.jsx";
 
 const ToDo = () => {
 
