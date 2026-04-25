@@ -7,6 +7,7 @@ import {
 } from "react";
 import Button from "../Button/Button.jsx";
 import {TaskContext} from "../../context/TaskContext.jsx";
+import styles from './ToDo.module.scss'
 
 const ToDo = () => {
 
@@ -14,18 +15,18 @@ const ToDo = () => {
 
   return (
 
-    <div className="todo">
-      <h1 className="todo__title">To Do List</h1>
-      <AddTaskForm />
-      <SearchTaskForm />
-      <ToDoInfo
+    <div className={styles.todo}>
+      <h1 className={styles.title}>To Do List</h1>
+      <AddTaskForm styles={styles}/>
+      <SearchTaskForm styles={styles}/>
+      <ToDoInfo styles={styles}
       />
       <Button
         onClick={() => firstIncompleteTaskRef.current?.scrollIntoView({behavior: "smooth"})}
       >
         Show first incomplete task
       </Button>
-      <ToDoList />
+      <ToDoList styles={styles}/>
     </div>
 
   )

@@ -1,47 +1,66 @@
-const URL = 'http://localhost:3001/tasks'
-const headers = {
-  'Content-Type': 'application/json'
+const STORAGE_KEY = 'tasks'
+
+const readTasks = () => {
+  const savedTasks = localStorage.getItem(STORAGE_KEY)
+
+  return savedTasks ? JSON.parse(savedTasks) : []
+}
+
+const saveTasks = (tasks) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
+}
+
+const createTaskId = () => {
+  return typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : String(Date.now())
 }
 
 const tasksAPI = {
-  getAll: () => {
-    return fetch(URL)
-      .then((response) => response.json())
+  getAll: async () => {
+    return readTasks()
   },
 
-  getById: (taskId) => {
-    return fetch(`${URL}/${taskId}`)
-      .then((response)=> response.json())
+  getById: async (taskId) => {
+    return readTasks().find((task) => task.id === taskId) ?? null
   },
 
-  add: (task) => {
-    return fetch(URL, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(task)
-    })
-      .then(res => res.json())
+  add: async (task) => {
+    const tasks = readTasks()
+    const addedTask = {
+      ...task,
+      id: createTaskId()
+    }
 
+    saveTasks([...tasks, addedTask])
+
+    return addedTask
   },
 
-  delete: (id) => {
-    return fetch(`${URL}/${id}`, {
-      method: 'DELETE'
-    })
+  delete: async (id) => {
+    const tasks = readTasks()
+    saveTasks(tasks.filter((task) => task.id !== id))
   },
 
-  deleteAll: (tasks) => {
-    return Promise.all(
-      tasks.map((id) => tasksAPI.delete(id))
+  deleteAll: async (taskIds) => {
+    const idsToDelete = new Set(taskIds)
+    const tasks = readTasks()
+
+    saveTasks(tasks.filter((task) => !idsToDelete.has(task.id)))
+  },
+
+  toggleComplete: async (id, isDone) => {
+    const tasks = readTasks()
+
+    saveTasks(
+      tasks.map((task) => {
+        if (task.id === id) {
+          return {...task, isDone}
+        }
+
+        return task
+      })
     )
-  },
-
-  toggleComplete: (id, isDone) => {
-    return fetch(`${URL}/${id}`, {
-      method: 'PATCH',
-      headers,
-      body: JSON.stringify({isDone})
-    })
   },
 }
 

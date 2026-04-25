@@ -1,6 +1,7 @@
-import {memo, useContext} from "react";
+import {memo, useContext, useRef} from "react";
 import {TaskContext} from "../../context/TaskContext.jsx";
 import RouterLink from "../RouterLink/RouterLink.jsx";
+import styles from './ToDoItem.module.scss'
 
 const ToDoItem = (props) => {
   const {
@@ -15,31 +16,41 @@ const ToDoItem = (props) => {
     firstIncompleteTaskId,
     deleteTask,
     toggleTaskComplete,
-
+    disappearingTaskId,
+    appearingTaskId
   } = useContext(TaskContext)
+
   return (
     <li
-      className={`todo-item ${className}`}
+      className={`
+      ${styles.todoItem} 
+      ${className} 
+      ${disappearingTaskId === id ? styles.isDisappearing : ''}
+      ${appearingTaskId === id ? styles.isAppearing : ''}
+      `}
       ref={id === firstIncompleteTaskId ? firstIncompleteTaskRef : null}
     >
       <input
-        className="todo-item__checkbox"
+        className={styles.checkbox}
         id={id}
         type="checkbox"
         checked={isDone}
         onChange={(event) => toggleTaskComplete(id, event.target.checked)}
       />
       <label
-        className="todo-item__label visually-hidden"
+        className={`${styles.label} visually-hidden`}
         htmlFor={id}
       >
         {title}
       </label>
-      <RouterLink to={`/tasks/${id}`} aria-label='Task detail page'>
+      <RouterLink
+        to={`/tasks/${id}`}
+        aria-label='Task detail page'
+      >
         {title}
       </RouterLink>
       <button
-        className="todo-item__delete-button"
+        className={styles.deleteButton}
         aria-label="Delete"
         title="Delete"
         onClick={() => deleteTask(id)}
